@@ -122,7 +122,7 @@ async def issue_commented_event(event: sansio.Event, github_object: gh_aiohttp.G
     comment: str = event.data['comment']['body']
 
     # check if bot posted this comment so we can ignore
-    if event.data['comment']['user']['login'] == 'stephend017': # TODO find way to change this 
+    if event.data['comment']['user']['login'] == config_file['bot_name']: # TODO find way to change this 
         return
 
     if issue.is_registered_command(comment):

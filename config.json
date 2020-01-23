@@ -1,5 +1,5 @@
 {
-    "bot_name": "ghlinter",
+    "bot_name": "ghlint-bot",
     "issues": {
         "on_opened_comment": "this issue was created by @{author}",
         "on_closed_comment": "this issue is no longer being tracked by ghlinter",
