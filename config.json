@@ -4,7 +4,7 @@
         "on_opened_comment": "this issue was created by @{author}",
         "on_closed_comment": "this issue is no longer being tracked by ghlinter",
         "on_assgined_comment": "this issue was assigned to @{assignees}",
-        "on_unassigned_comment": "this isssue is no longer assigned to @{unassignees}",
+        "on_unassigned_comment": "this isssue is no longer assigned to @{unassignee}",
         "title_format": "\\((fix|chore|feature)\\).*",
         "cli": [
             {

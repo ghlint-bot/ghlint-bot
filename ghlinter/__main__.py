@@ -12,6 +12,32 @@ routes = web.RouteTableDef()
 router = routing.Router()
 config_file: json = {}
 
+#### GLOBAL User Variables
+## available user variables when creating commands and responses
+##
+## author:      author of the given issue or pull request
+## number:      number of the given issue or pull request
+## assignees:   list of users assigned to given issue or pull request
+## unassignee:  user unassigned from given issue or pull request (only available on unassigned events)
+## bot_name:    name of the bot (ghlint-bot)
+class GlobalVariableStore:
+    def __init__(self):
+        self.author = ''
+        self.number = 0
+        self.assignees = []
+        self.unassignee = ''
+
+global_variable_store: GlobalVariableStore = GlobalVariableStore()
+
+def format_user_globals(src: str) -> str:
+    return src.format(
+        author = global_variable_store.author, 
+        number=global_variable_store.number, 
+        assignees=global_variable_store.assignees, 
+        unassignee=global_variable_store.unassignee, 
+        bot_name=config_file['bot_name']
+    )
+
 # global utility functions
 def load_json_file(path: str) -> json:
     file = open(path, 'r')
@@ -24,11 +50,13 @@ class Issue:
     def __init__(self, event: sansio.Event, github_object: gh_aiohttp.GitHubAPI):
         self.event = event
         self.github_object = github_object
+        global_variable_store.author = self.get_author()
+        global_variable_store.number = self.get_number()
 
     def get_url(self) -> str:
         repo_owner: str = self.get_repo_owner()
         repo_name: str = self.get_repo_name()
-        issue_number: str = self.get_issue_number()
+        issue_number: str = self.get_number()
         return f'/repos/{repo_owner}/{repo_name}/issues/{issue_number}'
 
     def get_repo_owner(self) -> str:
@@ -37,7 +65,7 @@ class Issue:
     def get_repo_name(self) -> str:
         return self.event.data['repository']['name']
 
-    def get_issue_number(self) -> str:
+    def get_number(self) -> str:
         return self.event.data['issue']['number']
 
     def get_comment_url(self) -> str:
@@ -84,7 +112,7 @@ async def issue_opened_event(event: sansio.Event, github_object: gh_aiohttp.GitH
         return
 
     # issue is formatted correctly post on opened comment
-    comment: str = config_file['issues']['on_opened_comment']
+    comment: str = format_user_globals(config_file['issues']['on_opened_comment'])
     if comment != None:
         await issue.comment(comment)
 
@@ -93,7 +121,7 @@ async def issue_closed_event(event: sansio.Event, github_object: gh_aiohttp.GitH
     """ endpoint for when an issue is closed """
     issue: Issue = Issue(event, github_object)
 
-    comment: str = config_file['issues']['on_closed_comment']
+    comment: str = format_user_globals(config_file['issues']['on_closed_comment'])
     if comment != None:
         await issue.comment(comment)
 
@@ -102,7 +130,7 @@ async def issue_assigned_event(event: sansio.Event, github_object: gh_aiohttp.Gi
     """ endpoint for when an issue is assigned """
     issue: Issue = Issue(event, github_object)
 
-    comment: str = config_file['issues']['on_assigned_comment']
+    comment: str = format_user_globals(config_file['issues']['on_assigned_comment'])
     if comment != None:
         await issue.comment(comment)
 
@@ -111,7 +139,7 @@ async def issue_unassigned_event(event: sansio.Event, github_object: gh_aiohttp.
     """ endpoint for when an issue is unassigned """
     issue: Issue = Issue(event, github_object)
 
-    comment: str = config_file['issues']['on_unassigned_comment']
+    comment: str = format_user_globals(config_file['issues']['on_unassigned_comment'])
     if comment != None:
         await issue.comment(comment)
 
@@ -119,10 +147,10 @@ async def issue_unassigned_event(event: sansio.Event, github_object: gh_aiohttp.
 async def issue_commented_event(event: sansio.Event, github_object: gh_aiohttp.GitHubAPI, * args, **kwargs):
     """ endpoint for when someone comments on an issue """
     issue: Issue = Issue(event, github_object)
-    comment: str = event.data['comment']['body']
+    comment: str = format_user_globals(event.data['comment']['body'])
 
     # check if bot posted this comment so we can ignore
-    if event.data['comment']['user']['login'] == config_file['bot_name']: # TODO find way to change this 
+    if event.data['comment']['user']['login'] == config_file['bot_name']:
         return
 
     if issue.is_registered_command(comment):
