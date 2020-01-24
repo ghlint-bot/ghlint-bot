@@ -6,8 +6,7 @@ from ghlinter.store import store
 from ghlinter.router import router
 from ghlinter import config_manager
 
-@router.register("issue", action="opened")
-async def opened(event: Event, github_object: GitHubAPI, *args, **kwargs) -> None:
+async def opened(event: Event, github_object: GitHubAPI) -> None:
     """ endpoint for when an issue is opened """
     issue: Issue = Issue(event, github_object)
 
@@ -22,8 +21,7 @@ async def opened(event: Event, github_object: GitHubAPI, *args, **kwargs) -> Non
     if comment != None:
         await issue.comment(comment)
 
-@router.register("issue", action="closed")
-async def closed(event: Event, github_object: GitHubAPI, *args, **kwargs) -> None:
+async def closed(event: Event, github_object: GitHubAPI) -> None:
     """ endpoint for when an issue is closed """
     issue: Issue = Issue(event, github_object)
 
@@ -31,8 +29,7 @@ async def closed(event: Event, github_object: GitHubAPI, *args, **kwargs) -> Non
     if comment != None:
         await issue.comment(comment)
 
-@router.register("issue", action="assigned")
-async def assigned(event: Event, github_object: GitHubAPI, *args, **kwargs) -> None:
+async def assigned(event: Event, github_object: GitHubAPI) -> None:
     """ endpoint for when an issue is assigned """
     issue: Issue = Issue(event, github_object)
 
@@ -40,8 +37,7 @@ async def assigned(event: Event, github_object: GitHubAPI, *args, **kwargs) -> N
     if comment != None:
         await issue.comment(comment)
 
-@router.register("issue", action="unassigned")
-async def unassigned(event: Event, github_object: GitHubAPI, *args, **kwargs) -> None:
+async def unassigned(event: Event, github_object: GitHubAPI) -> None:
     """ endpoint for when an issue is unassigned """
     issue: Issue = Issue(event, github_object)
 
@@ -49,8 +45,7 @@ async def unassigned(event: Event, github_object: GitHubAPI, *args, **kwargs) ->
     if comment != None:
         await issue.comment(comment)
 
-@router.register("issue_comment", action="created")
-async def commented(event: Event, github_object: GitHubAPI, *args, **kwargs) -> None:
+async def commented(event: Event, github_object: GitHubAPI) -> None:
     """ endpoint for when someone comments on an issue """
     issue: Issue = Issue(event, github_object)
     comment: str = store.format_string(event.data['comment']['body'])

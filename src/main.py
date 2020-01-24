@@ -9,14 +9,13 @@ from gidgethub import aiohttp as gh_aiohttp
 
 from ghlinter.issue import Issue
 from ghlinter import config_manager
-
+from ghlinter import issue_events
 #temp
 from ghlinter.store import store
-from ghlinter import router
 
 # GLOBAL variable setup
 routes = web.RouteTableDef()
-# router = routing.Router()
+router = routing.Router()
 
 #### GLOBAL User Variables
 ## available user variables when creating commands and responses
@@ -53,9 +52,11 @@ routes = web.RouteTableDef()
 #         bot_name=config_manager.bot_name()
 #     )
 
-# @router.register("issues", action="opened")
-# async def issue_opened_event(event: sansio.Event, github_object: gh_aiohttp.GitHubAPI, *args, **kawrgs):
-#     """ endpoint for when an issue is opened """
+@router.register("issues", action="opened")
+async def issue_opened_event(event: sansio.Event, github_object: gh_aiohttp.GitHubAPI, *args, **kawrgs):
+    """ endpoint for when an issue is opened """
+    await issue_events.opened(event, github_object)
+
 #     issue: Issue = Issue(event, github_object)
 
 #     # first check that the formatting is correct
@@ -69,36 +70,44 @@ routes = web.RouteTableDef()
 #     if comment != None:
 #         await issue.comment(comment)
 
-# @router.register("issues", action="closed")
-# async def issue_closed_event(event: sansio.Event, github_object: gh_aiohttp.GitHubAPI, *args, **kwargs):
-#     """ endpoint for when an issue is closed """
+@router.register("issues", action="closed")
+async def issue_closed_event(event: sansio.Event, github_object: gh_aiohttp.GitHubAPI, *args, **kwargs):
+    """ endpoint for when an issue is closed """
+    await issue_events.closed(event, github_object)
+
 #     issue: Issue = Issue(event, github_object)
 
 #     comment: str = store.format_string(config_manager.issues()['on_closed_comment'])
 #     if comment != None:
 #         await issue.comment(comment)
 
-# @router.register("issues", action="assigned")
-# async def issue_assigned_event(event: sansio.Event, github_object: gh_aiohttp.GitHubAPI, *args, **kwargs):
-#     """ endpoint for when an issue is assigned """
-#     issue: Issue = Issue(event, github_object)
+@router.register("issues", action="assigned")
+async def issue_assigned_event(event: sansio.Event, github_object: gh_aiohttp.GitHubAPI, *args, **kwargs):
+    """ endpoint for when an issue is assigned """
+    await issue_events.assigned(event, github_object)
+
+    # issue: Issue = Issue(event, github_object)
 
 #     comment: str = store.format_string(config_manager.issues()['on_assigned_comment'])
 #     if comment != None:
 #         await issue.comment(comment)
 
-# @router.register("issues", action="unassigned")
-# async def issue_unassigned_event(event: sansio.Event, github_object: gh_aiohttp.GitHubAPI, *args, **kwargs):
-#     """ endpoint for when an issue is unassigned """
+@router.register("issues", action="unassigned")
+async def issue_unassigned_event(event: sansio.Event, github_object: gh_aiohttp.GitHubAPI, *args, **kwargs):
+    """ endpoint for when an issue is unassigned """
+    await issue_events.unassigned(event, github_object)
+
 #     issue: Issue = Issue(event, github_object)
 
 #     comment: str = store.format_string(config_manager.issues()['on_unassigned_comment'])
 #     if comment != None:
 #         await issue.comment(comment)
 
-# @router.register("issue_comment", action="created")
-# async def issue_commented_event(event: sansio.Event, github_object: gh_aiohttp.GitHubAPI, * args, **kwargs):
-#     """ endpoint for when someone comments on an issue """
+@router.register("issue_comment", action="created")
+async def issue_commented_event(event: sansio.Event, github_object: gh_aiohttp.GitHubAPI, * args, **kwargs):
+    """ endpoint for when someone comments on an issue """
+    await issue_events.commented(event, github_object)
+    
 #     issue: Issue = Issue(event, github_object)
 #     comment: str = store.format_string(event.data['comment']['body'])
 
@@ -127,14 +136,13 @@ async def main(request):
         gh = gh_aiohttp.GitHubAPI(session, config_manager.bot_name(), oauth_token=oauth_token)
 
         # call for the appropriate callback for the event
-        await router.router.dispatch(event, gh)
+        await router.dispatch(event, gh)
 
     # return a "Success"
     return web.Response(status=200)
 
 if __name__ == "__main__":
     config_manager.load()
-    router.load()
     app = web.Application()
     app.add_routes(routes)
     port = os.environ.get("PORT")
