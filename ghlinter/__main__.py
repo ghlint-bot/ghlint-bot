@@ -7,6 +7,8 @@ from aiohttp import web
 from gidgethub import routing, sansio
 from gidgethub import aiohttp as gh_aiohttp
 
+import issues
+
 # GLOBAL variable setup
 routes = web.RouteTableDef()
 router = routing.Router()
@@ -186,6 +188,7 @@ async def main(request):
     return web.Response(status=200)
 
 if __name__ == "__main__":
+    issues.init()
     config_file = load_json_file('config.json')
     app = web.Application()
     app.add_routes(routes)
