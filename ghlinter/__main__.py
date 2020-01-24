@@ -79,7 +79,13 @@ class Issue:
 
     def is_formatted_correctly(self) -> bool:
         title: str = self.get_title()
-        return re.search(config_file['issues']['title_format'], title) != None
+        is_valid: bool = False
+        for issue_type in config_file['issues']['types']:
+            if title.startswith('(' + issue_type + ')'):
+                is_valid = True
+                break
+    
+        return is_valid and re.search(config_file['issues']['title_format'], title) != None
 
     def is_registered_command(self, command: str) -> bool:
         for command in config_file['issues']['cli']:
@@ -96,7 +102,7 @@ class Issue:
         await self.github_object.patch(url, data={'state': 'closed'})
 
     async def dispatch(self, command: str) -> None:
-        if command == config_file['bot_name'] + ' create branch':
+        if command == '@' + config_file['bot_name'] + ' create branch':
             # TODO implement
             pass
 

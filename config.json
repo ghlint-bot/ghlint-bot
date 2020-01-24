@@ -10,7 +10,7 @@
             "chore",
             "feature"
         ],
-        "title_format": "\\((fix|chore|feature)\\) .*",
+        "title_format": "\\((\\w+)\\) .*",
         "cli": [
             {
                 "command": "create branch",
@@ -19,14 +19,14 @@
         ]
     },
     "branches": {
-        "title_format": "\\((fix|chore|feature)\\) #(\\d+) .*"
+        "title_format": "\\((\\w+)\\) #(\\d+) .*"
     },
     "pull_requests": {
         "on_opened_comment": "",
         "on_closed_comment": "",
         "on_assigned_comment": "",
         "on_unassigned_comment": "",
-        "title_format": "\\((fix|chore|feature)\\) #(\\d+) .*",
+        "title_format": "\\((\\w+)\\) #(\\d+) .*",
         "cli": []
     },
     "labels": [
