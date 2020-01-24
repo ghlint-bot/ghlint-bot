@@ -3,14 +3,41 @@
     "issues": {
         "on_opened_comment": "this issue was created by @{author}",
         "on_closed_comment": "this issue is no longer being tracked by ghlinter",
-        "on_assgined_comment": "this issue was assigned to @{assignees}",
-        "on_unassigned_comment": "this isssue is no longer assigned to @{unassignee}",
-        "title_format": "\\((fix|chore|feature)\\).*",
+        "on_assgined_comment": "",
+        "on_unassigned_comment": "",
+        "types": [
+            "fix",
+            "chore",
+            "feature"
+        ],
+        "title_format": "\\((fix|chore|feature)\\) .*",
         "cli": [
             {
                 "command": "create branch",
                 "description": "creates a new branch for this issue"
             }
         ]
-    }
+    },
+    "branches": {
+        "title_format": "\\((fix|chore|feature)\\) #(\\d+) .*"
+    },
+    "pull_requests": {
+        "on_opened_comment": "",
+        "on_closed_comment": "",
+        "on_assigned_comment": "",
+        "on_unassigned_comment": "",
+        "title_format": "\\((fix|chore|feature)\\) #(\\d+) .*",
+        "cli": []
+    },
+    "labels": [
+        {
+            "name": "[label]",
+            "pull_request_rules": {
+                "apply_in_dirs": [],
+                "apply_when_file_added_in_dirs": [],
+                "apply_when_file_modified_in_dirs": [],
+                "apply_when_file_removed_from_dirs": []
+            }
+        }
+    ]
 }
