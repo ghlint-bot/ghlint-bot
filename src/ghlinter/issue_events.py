@@ -1,8 +1,9 @@
 from gidgethub.sansio import Event
 from gidgethub.aiohttp import GitHubAPI
-from ghlinter.router import router
+# from ghlinter.router import router
 from ghlinter.issue import Issue
 from ghlinter.store import store
+from ghlinter.router import router
 from ghlinter import config_manager
 
 @router.register("issue", action="opened")

@@ -12,7 +12,7 @@ from ghlinter import config_manager
 
 #temp
 from ghlinter.store import store
-from ghlinter.router import router
+from ghlinter import router
 
 # GLOBAL variable setup
 routes = web.RouteTableDef()
@@ -127,13 +127,14 @@ async def main(request):
         gh = gh_aiohttp.GitHubAPI(session, config_manager.bot_name(), oauth_token=oauth_token)
 
         # call for the appropriate callback for the event
-        await router.dispatch(event, gh)
+        await router.router.dispatch(event, gh)
 
     # return a "Success"
     return web.Response(status=200)
 
 if __name__ == "__main__":
     config_manager.load()
+    router.load()
     app = web.Application()
     app.add_routes(routes)
     port = os.environ.get("PORT")
