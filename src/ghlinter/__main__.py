@@ -7,7 +7,7 @@ from aiohttp import web
 from gidgethub import routing, sansio
 from gidgethub import aiohttp as gh_aiohttp
 
-import issues
+from ghlinter import issues
 
 # GLOBAL variable setup
 routes = web.RouteTableDef()
