@@ -1,1 +1,1 @@
-web: python -m ghlinter
+web: python -m src
