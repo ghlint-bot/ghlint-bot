@@ -45,8 +45,8 @@ class Issue:
         return is_valid and re.search(config_manager.issues()['title_format'], title) != None
 
     def is_registered_command(self, command: str) -> bool:
-        for command in config_manager.issues()['cli']:
-            if store.format_string(command['command']) == command:
+        for cli_command in config_manager.issues()['cli']:
+            if store.format_string(cli_command['command']) == command:
                 return True
         return False
 
