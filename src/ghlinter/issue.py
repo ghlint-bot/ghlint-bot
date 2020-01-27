@@ -3,6 +3,7 @@ from gidgethub.sansio import Event
 from gidgethub.aiohttp import GitHubAPI
 from ghlinter import config_manager
 from ghlinter import branch
+from ghlinter.store import store
 
 class Issue:
     def __init__(self, event: Event, github_object: GitHubAPI):
@@ -45,7 +46,7 @@ class Issue:
 
     def is_registered_command(self, command: str) -> bool:
         for command in config_manager.issues()['cli']:
-            if command['command'] == command:
+            if store.format_string(command['command']) == command:
                 return True
         return False
 
