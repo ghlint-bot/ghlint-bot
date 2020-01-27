@@ -2,6 +2,7 @@ import re
 from gidgethub.sansio import Event
 from gidgethub.aiohttp import GitHubAPI
 from ghlinter import config_manager
+from ghlinter import branch
 
 class Issue:
     def __init__(self, event: Event, github_object: GitHubAPI):
@@ -58,5 +59,4 @@ class Issue:
 
     async def dispatch(self, command: str) -> None:
         if command == '@' + config_manager.bot_name() + ' create branch':
-            # TODO implement
-            pass
+            await branch.create_branch(self.get_repo_owner(), self.get_repo_name(), self.get_title(), self.github_object)
