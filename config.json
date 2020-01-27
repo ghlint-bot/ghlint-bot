@@ -13,7 +13,7 @@
         "title_format": "\\((\\w+)\\) .*",
         "cli": [
             {
-                "command": "{bot_name} create branch",
+                "command": "@{bot_name} create branch",
                 "description": "creates a new branch for this issue"
             }
         ]
